@@ -7,9 +7,9 @@ module.exports = (req, res) => {
         return res.status(422).send({ err: "You must provide a phone number" });
     }
 
-    const phone = String(req.body.phone).replace(/[^/d]/g, '');
-    console.log(`phone is: ${phone}`);
-    
+    console.log(`phone before: ${req.body.phone}`);
+    const phone = String(req.body.phone).replace(/[^\d]/g, "");
+    console.log(`phone after: ${phone}`);    
 
     admin.auth().getUser(phone)
         .then(response => {
@@ -24,12 +24,10 @@ module.exports = (req, res) => {
                     .update({ code, codeValid: true }, () => {
                         return res.send({ success: true });
                     });
-                return null;
             })
             .catch(error => {
                 return res.status(422).send({ error });
-            });
-            return null;            
+            });           
         })
         .catch(error => {
             return res.status(422).send({ error });
